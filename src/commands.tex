@@ -1,0 +1,77 @@
+% 辅助
+\newcommand{\nospace}{\unskip\ignorespaces}
+\newcommand{\hideIf}[2]{\ifthenelse{#1}{\phantom{#2}}{#2}}
+
+% 试卷环境
+\NewEnviron{ExamPaper}{
+	\begin{document}
+
+	\newcounter{question}[section]
+	\newcounter{option}[question]
+
+	\maketitle
+	\BODY
+
+	\end{document}
+}
+
+\catcode`\。=13
+\def。{．}
+
+% 将 section 重定义为题目类别
+\renewenvironment{section}[2][]{
+	\\
+	\stepcounter{section}
+	\noindent \textbf{\Roman{section} #2} \quad #1
+	\\
+}{
+	\\
+}
+
+% 题目
+\newcommand{\question}[1]{
+	\stepcounter{question}
+	\noindent \textbf{\arabic{question}.} #1
+	\\
+}
+
+% 答案，在 \noAnswer 为 true 时隐藏
+\newcommand{\answer}[1]{\hideIf{\equal{\noAnswer}{true}}{\nospace #1\nospace}}
+\NewEnviron{Answer}{
+	\\
+	\answer{\noindent 解\quad\BODY}
+	\\
+}
+
+% 行内答案，有下划线
+\newcommand{\inlineAnswer}[1]{\nospace\ \underline{\,\answer{#1}\,}\ \nospace}
+
+% 选择题答案
+\newcommand\option{
+	\addtocounter{option}{1}
+	(\Alph{option})
+}
+\newcommand{\options}[1]{
+	\\
+	\begin{tabular}{llll}
+		#1
+	\end{tabular}
+	\\
+}
+
+% 右侧打分
+\newcommand{\rightdot}[1]{\dotfill #1 \\}
+\newcommand{\rightgrade}[1]{\rightdot{（#1 分）}}
+
+% 数学
+\newcommand{\ds}{\displaystyle}
+
+\let\nvec\vec
+\renewcommand{\vec}[1]{\ensuremath{\overrightarrow{\mathbf{#1}}}}
+
+\let\der\partial
+\renewcommand{\partial}[3][]{\frac{\der^{#1}#3}{\der{#2}^{#1}}}
+
+\def\d{\mathrm d}
+\def\D{\mathrm D}
+\renewcommand{\derivative}[3][]{\frac{\d^{#1}#3}{\d{#2}^{#1}}}
